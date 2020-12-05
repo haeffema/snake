@@ -1,0 +1,127 @@
+#include <Arduino.h>
+#include <vector>
+#include <Farbe.h>
+#include <Futter.h>
+#include <Schlange.h>
+#include <Steuerung.h>
+#include <Maler.h>
+
+Farbe weiss(255, 255, 255);
+Farbe gruen(255, 0, 0);
+Farbe rot(0, 255, 0);
+Farbe blau(0, 0, 255);
+Farbe schwarz(0, 0, 0);
+Farbe gelb(255, 255, 0);
+Farbe cyan(255, 0, 255);
+Farbe lila(0, 255, 255);
+
+std::vector<Futter> futter;
+Schlange *a = new Schlange(false, lila.get1(), lila.get2(), lila.get3(), 23);
+Schlange *b = new Schlange(true, cyan.get1(), cyan.get2(), cyan.get3(), 65);
+Schlange *c = new Schlange(false, blau.get1(), blau.get2(), blau.get3(), 108);
+Schlange *d = new Schlange(true, gruen.get1(), gruen.get2(), gruen.get3(), 150);
+Schlange *e = new Schlange(false, gelb.get1(), gelb.get2(), gelb.get3(), 193);
+Schlange *f = new Schlange(true, rot.get1(), rot.get2(), rot.get3(), 235);
+std::vector<Schlange *> schlangen;
+
+Steuerung S;
+
+Maler M;
+
+void setup()
+{
+  schlangen.push_back(a);
+  schlangen.push_back(b);
+  schlangen.push_back(c);
+  schlangen.push_back(d);
+  schlangen.push_back(e);
+  schlangen.push_back(f);
+}
+
+void neuesFutter()
+{
+  if (random(25) == 1)
+  {
+    boolean test = false;
+    while (test == false)
+    {
+      int stelle = random(255);
+      for (uint i = 0; i < schlangen.size(); i++)
+      {
+        if (schlangen[i]->belegt(stelle) == false)
+        {
+          futter.push_back(stelle);
+          test = true;
+        }
+        else
+        {
+          test = false;
+        }
+      }
+    }
+  }
+  for (uint i = 0; i < futter.size(); i++)
+  {
+    M.maleFutter(futter[i]);
+  }
+}
+
+void loop()
+{
+  for (uint i = 0; i < schlangen.size(); i++)
+  {
+    schlangen[i]->laenge = 3;
+    schlangen[i]->stelle = 50 * i;
+  }
+  for (uint i = 0; i < futter.size(); i++)
+  {
+    futter.erase(futter.begin() + i);
+  }
+
+  int ganzeLaenge = 0;
+  S.gameover = false;
+  while (S.gameover == false)
+  {
+    for (uint i = 0; i < schlangen.size(); i++)
+    {
+      schlangen[i]->istGroesser = false;
+    }
+
+    ganzeLaenge = 0;
+    M.clear();
+    neuesFutter();
+    for (uint i = 0; i < schlangen.size(); i++)
+    {
+      S.bewegen(*schlangen[i]);
+      for (uint j = 0; j < futter.size(); j++)
+      {
+        if (schlangen[i]->istAufFutter(futter[j]) == true)
+        {
+          if (schlangen[i]->istGroesser == false)
+          {
+            S.einsGroesser(schlangen[i]);
+            futter.erase(futter.begin() + j);
+            schlangen[i]->istGroesser = true;
+          }
+        }
+      }
+      for (uint l = 0; l < schlangen.size(); l++)
+      {
+        if (i == l)
+          continue;
+        if (schlangen[l]->belegt(schlangen[i]->stelle) == true)
+        {
+          schlangen[i]->dreheDich();
+        }
+      }
+      M.maleSchlange(*schlangen[i]);
+      ganzeLaenge += schlangen[i]->laenge;
+    }
+    M.show();
+    delay(250);
+    if (led_count < ganzeLaenge)
+    {
+      S.gameover = true;
+    }
+  }
+}
