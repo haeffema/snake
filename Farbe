@@ -1,0 +1,25 @@
+class Farbe
+{
+public:
+  byte rot;
+  byte gruen;
+  byte blau;
+  Farbe(byte rot, byte gruen, byte blau)
+  {
+    this->rot = rot;
+    this->gruen = gruen;
+    this->blau = blau;
+  }
+  byte get1()
+  {
+    return this->rot;
+  }
+  byte get2()
+  {
+    return this->gruen;
+  }
+  byte get3()
+  {
+    return this->blau;
+  }
+};
