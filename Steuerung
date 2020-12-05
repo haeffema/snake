@@ -1,0 +1,24 @@
+#define led_count 256
+class Steuerung
+{
+public:
+  bool gameover = false;
+  void bewegen(Schlange &s)
+  {
+
+    s.krieche();
+
+    if (s.stelle == led_count)
+    {
+      s.dreheDich();
+    }
+
+    if (s.stelle == -1)
+    {
+      s.dreheDich();
+    }
+  }
+  void einsGroesser(Schlange *s){
+    s->laenge += 1;
+  }
+};
