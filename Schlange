@@ -1,0 +1,62 @@
+class Schlange
+{
+public:
+  int laenge;
+  boolean richtung;
+  byte rot;
+  byte gruen;
+  byte blau;
+  int stelle;
+  boolean istGroesser;
+  Schlange(boolean richtung, byte rot, byte gruen, byte blau, int stelle)
+  {
+    this->laenge = 3;
+    this->richtung = richtung;
+    this->stelle = stelle;
+    this->rot = rot;
+    this->gruen = gruen;
+    this->blau = blau;
+    this->istGroesser = false;
+  }
+  boolean istAufFutter(Futter f)
+  {
+    return this->stelle == f.stelle;
+  }
+  void krieche()
+  {
+    if (this->richtung == true)
+    {
+      this->stelle += 1;
+    }
+    else if (this->richtung == false)
+    {
+      this->stelle -= 1;
+    }
+  }
+  void dreheDich()
+  {
+    if (this->richtung == true)
+    {
+      this->richtung = false;
+
+      this->stelle -= this->laenge;
+    }
+    else
+    {
+      this->richtung = true;
+      this->stelle += this->laenge ;
+    }
+    krieche(); // wieder da raus wo ich versehentlich reingefahren bin
+  }
+  boolean belegt(int gefragt)
+  {
+    if (this->richtung == false)
+    {
+      return this->stelle <= gefragt && gefragt <= this->stelle + this->laenge;
+    }
+    else
+    {
+      return this->stelle - this->laenge <= gefragt && gefragt <= this->stelle;
+    }
+  }
+};
