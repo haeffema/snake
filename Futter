@@ -1,0 +1,12 @@
+class Futter
+{
+public:
+  int stelle;
+  byte rot = 255;
+  byte gruen = 255;
+  byte blau = 255;
+  Futter(int stelle)
+  {
+    this->stelle = stelle;
+  }
+};
