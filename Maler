@@ -1,0 +1,43 @@
+#define led_count 256
+#define port D6
+#include <Adafruit_NeoPixel.h>
+class Maler
+{
+  Adafruit_NeoPixel pixels = Adafruit_NeoPixel(led_count, port, NEO_RGB + NEO_KHZ800);
+
+public:
+  void maleSchlange(Schlange s)
+  {
+
+    int faktor = -1;
+    if (s.richtung == false) 
+    {
+      faktor = +1;
+    }
+    for (int i= 0; i<s.laenge; i++)
+    {
+        pixels.setPixelColor(s.stelle+i*faktor, s.rot, s.gruen, s.blau);
+    }
+  }
+  void maleFutter(Futter f)
+  {
+    pixels.setPixelColor(f.stelle, f.rot, f.gruen, f.blau);
+  }
+  Maler()
+  {
+    pixels.begin();
+    pixels.setBrightness(20);
+    pixels.show();
+  }
+  void show()
+  {
+    this->pixels.show();
+  }
+  void clear()
+  {
+    this->pixels.clear();
+  }
+  void getPixelColor(int i){
+    this->pixels.getPixelColor(i);
+  }
+};
